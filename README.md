@@ -4,9 +4,7 @@ A project that uses the [slack-machine](https://slack-machine.readthedocs.io/) p
 ## Quickstart
 Install this project's dependencies with
 
-`pip install slack-machine`
-
-`pip install slackclient`
+`pip install -r requirements.txt`
 
 Also, make sure you have the `pdflatex` and `convert` commands available. `pdflatex` typically comes with any standard LaTeX distribution, and `convert` comes pre-installed in most Linux distros.
 
@@ -19,9 +17,7 @@ After you clone this repository, go into the repository's root directory with `c
 
 `pipenv --python 3.6`
 
-`pipenv install slack-machine`
-
-`pipenv install slackclient`
+`pipenv install -r requirements.txt`
 
 Also, make sure you have the `pdflatex` and `convert` commands available. `pdflatex` typically comes with any standard LaTeX distribution, and `convert` comes pre-installed in most Linux distros.
 
