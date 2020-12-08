@@ -12,18 +12,19 @@ class LatexPlugin(MachineBasePlugin):
         self.sc = SlackClient(self.settings['SLACK_API_TOKEN'])
 
     def catch_all(self, data):
-        if data['type'] == 'message' and type(data['text']) == str:
+        if data['type'] == 'message' and 'text' in data and type(data['text']) == str:
+            thread = data.get('thread_ts', None)
             # =tex command
             if re.match(r'=tex[\s]', data['text'], re.IGNORECASE):
-                self.render_upload_latex(data['text'][5:], data['channel'])
+                self.render_upload_latex(data['text'][5:], data['channel'], thread)
             # =t command
             if re.match(r'=t[\s]', data['text'], re.IGNORECASE):
-                self.render_upload_latex('$' + data['text'][3:] + '$', data['channel'])
+                self.render_upload_latex('$' + data['text'][3:] + '$', data['channel'], thread)
             # =help command
             if re.match(r'=help', data['text'], re.IGNORECASE):
-                self.sc.api_call("chat.postMessage",channel=data['channel'],text=self.settings['HELP_RESPONSE'])
+                self.sc.api_call("chat.postMessage",channel=data['channel'],text=self.settings['HELP_RESPONSE'], thread_ts=thread)
 
-    def render_upload_latex(self, msgtext, msgchannel):
+    def render_upload_latex(self, msgtext, msgchannel, msgthread=None):
         #Slack converts the characters &, <, and > in user messages to special strings. Here, we convert them back.
         msgtext = msgtext.replace(r'&amp;', r'&')
         msgtext = msgtext.replace(r'&lt;', r'<')
@@ -44,6 +45,7 @@ class LatexPlugin(MachineBasePlugin):
                     self.sc.api_call(
                     "files.upload",
                     channels=msgchannel,
+                    thread_ts=msgthread,
                     file=file_content,
                     title="LaTeX.png"
                     )
